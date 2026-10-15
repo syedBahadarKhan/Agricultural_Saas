@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Leaf, ShoppingCart, TrendingUp, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import heroImage from '../../assets/images/heroimage.png';
+import PlatformFeatures from '../../features/landing/components/PlatformFeatures';
 
 export default function Landing() {
   return (
     <div className="bg-slate-50">
-      {/* Hero Section */}
+      {/* Hero Section — untouched */}
       <section className="relative bg-agrigreen-900 text-white py-28 md:py-36 px-4 bg-cover bg-center" style={{ backgroundImage: `linear-gradient(rgba(8, 35, 20, 0.72), rgba(8, 35, 20, 0.72)), url(${heroImage})` }}>
         <div className="container mx-auto text-center max-w-4xl">
           <h1 className="text-5xl font-bold mb-6 text-agrigreen-50">From Farm to Market — One Intelligent Agricultural Platform</h1>
@@ -18,7 +19,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Marketplace Preview */}
+      {/* Platform Features — redesigned premium section */}
+      <PlatformFeatures />
+       {/* Marketplace Preview — untouched */}
       <section className="py-20 px-4 bg-slate-100">
         <div className="container mx-auto max-w-6xl">
           <div className="flex justify-between items-end mb-10">
@@ -118,43 +121,6 @@ export default function Landing() {
                   Buy / Request
                 </Link>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-16 text-navy-900">Platform Features</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-              <div className="w-12 h-12 bg-agrigreen-100 text-agrigreen-600 rounded-lg flex items-center justify-center mb-4">
-                <Leaf size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Crop Intelligence</h3>
-              <p className="text-slate-600">Access verified disease and treatment knowledge backed by agricultural experts.</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-              <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4">
-                <ShoppingCart size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">B2B Procurement</h3>
-              <p className="text-slate-600">Create RFQs and negotiate directly with verified farmers and aggregators.</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-              <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center mb-4">
-                <TrendingUp size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Market Analytics</h3>
-              <p className="text-slate-600">Track price trends and expected harvest supply for better decision making.</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-              <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4">
-                <ShieldCheck size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Quality & Trust</h3>
-              <p className="text-slate-600">Verified users, quality inspection reports, and transparent dispute management.</p>
             </div>
           </div>
         </div>

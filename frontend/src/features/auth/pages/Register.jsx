@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { getPostAuthPath, getSafeReturnTo, getStoredReturnTo } from '../utils/authRedirect';
 
 export default function Register() {
   const [role, setRole] = useState('FARMER');
@@ -8,11 +9,15 @@ export default function Register() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [businessType, setBusinessType] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -28,14 +33,22 @@ export default function Register() {
         phone,
         password,
         role,
+        businessName,
+        businessType,
+        businessAddress,
       });
 
       if (response.success) {
-        if (response.data.role === 'BUYER') {
-          navigate('/buyer');
+        const requestedReturnTo = getSafeReturnTo(new URLSearchParams(location.search).get('returnTo'));
+        const returnTo = requestedReturnTo || getStoredReturnTo();
+
+        if (response.data.accountStatus === 'APPROVED') {
+          localStorage.removeItem('authReturnTo');
         } else {
-          navigate('/farmer');
+          if (returnTo) localStorage.setItem('authReturnTo', returnTo);
         }
+
+        navigate(getPostAuthPath(response.data.role, returnTo));
       }
     } catch (err) {
       setError(err.message || 'Failed to register');
@@ -52,7 +65,7 @@ export default function Register() {
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-agrigreen-600 hover:text-agrigreen-500">
+          <Link to={`/login${location.search}`} className="font-medium text-agrigreen-600 hover:text-agrigreen-500">
             Sign in
           </Link>
         </p>
@@ -144,6 +157,56 @@ export default function Register() {
                   required 
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-agrigreen-500 focus:border-agrigreen-500 sm:text-sm" 
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="business-name" className="block text-sm font-medium text-slate-700">
+                  {role === 'BUYER' ? 'Business / Org Name' : 'Farm / Business Name'}
+                </label>
+                <div className="mt-1">
+                  <input 
+                    type="text" 
+                    name="business-name" 
+                    id="business-name" 
+                    placeholder={role === 'BUYER' ? 'e.g. Al-Madina Wholesalers' : 'e.g. Green Valley Farms'}
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-agrigreen-500 focus:border-agrigreen-500 sm:text-sm" 
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="business-type" className="block text-sm font-medium text-slate-700">
+                  {role === 'BUYER' ? 'Business Type' : 'Farm Type'}
+                </label>
+                <div className="mt-1">
+                  <input 
+                    type="text" 
+                    name="business-type" 
+                    id="business-type" 
+                    placeholder={role === 'BUYER' ? 'e.g. Wholesale, Retail, Food Processor' : 'e.g. Commercial Farm, Cooperative'}
+                    value={businessType}
+                    onChange={(e) => setBusinessType(e.target.value)}
+                    className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-agrigreen-500 focus:border-agrigreen-500 sm:text-sm" 
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="business-address" className="block text-sm font-medium text-slate-700">Business / Operating Address</label>
+              <div className="mt-1">
+                <input 
+                  id="business-address" 
+                  name="business-address" 
+                  type="text" 
+                  placeholder="e.g. Main Market, Rawalpindi"
+                  value={businessAddress}
+                  onChange={(e) => setBusinessAddress(e.target.value)}
                   className="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-agrigreen-500 focus:border-agrigreen-500 sm:text-sm" 
                 />
               </div>

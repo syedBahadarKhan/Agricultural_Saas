@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { getStoredReturnTo } from '../../../features/auth/utils/authRedirect';
 
 export default function ApplicationStatus() {
   const { user } = useAuth();
+  const returnTo = getStoredReturnTo();
+  const signInPath = returnTo ? `/login?returnTo=${encodeURIComponent(returnTo)}` : '/login';
   let intentData = null;
   try {
     const intentStr = localStorage.getItem('purchaseIntent');
@@ -29,6 +32,9 @@ export default function ApplicationStatus() {
               <p className="text-sm text-slate-500 mb-6">
                 Your application has been submitted and is currently waiting for administrator review. You will be able to access the platform features once your account is approved.
               </p>
+              <Link to={signInPath} className="text-sm font-semibold text-agrigreen-700 hover:text-agrigreen-800">
+                Already approved? Sign in again to continue
+              </Link>
               {intentData && intentData.intent === 'BUY' && (
                 <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-md text-sm mb-6 text-left">
                   <span className="font-semibold block mb-1">Purchase Pending</span>

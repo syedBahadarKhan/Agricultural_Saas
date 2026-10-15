@@ -39,6 +39,22 @@ const orderSchema = new mongoose.Schema(
       contactNumber: String,
       expectedDeliveryDate: Date,
     },
+    notes: {
+      type: String,
+      trim: true,
+    },
+    qualityRequirements: {
+      type: String,
+      trim: true,
+    },
+    deliveryFee: {
+      type: Number,
+      default: 0,
+    },
+    currency: {
+      type: String,
+      default: 'PKR',
+    },
     paymentStatus: {
       type: String,
       enum: ['UNPAID', 'PARTIAL', 'PAID', 'REFUNDED'],

@@ -63,7 +63,9 @@ export default function PurchaseListing() {
           contactNumber,
           expectedDeliveryDate: expectedDate,
         },
-        notes
+        notes,
+        qualityRequirements: listing.grade,
+        deliveryFee,
       });
 
       if (response.data.success) {

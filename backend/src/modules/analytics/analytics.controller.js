@@ -24,8 +24,8 @@ export const getDashboardStats = async (req, res) => {
         .limit(5);
         
       const recentOrders = await Order.find({ seller: userId })
-        .populate('buyer', 'firstName lastName')
-        .populate('listing', 'title cropType pricePerUnit')
+        .populate('buyer', 'firstName lastName email phone isVerified businessName businessType businessAddress')
+        .populate('listing', 'title cropType pricePerUnit quantityUnit location')
         .sort('-createdAt')
         .limit(5);
 

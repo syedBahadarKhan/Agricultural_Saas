@@ -34,6 +34,15 @@ export const useRfq = () => {
     }
   };
 
+  const createRfq = async (rfqData) => {
+    try {
+      await rfqService.createRfq(rfqData);
+      await fetchRfqs();
+    } catch (err) {
+      throw new Error(err.message || 'Failed to create request');
+    }
+  };
+
   const acceptBid = async (bidId) => {
     try {
       await rfqService.acceptBid(bidId);
@@ -43,5 +52,5 @@ export const useRfq = () => {
     }
   };
 
-  return { rfqs, loading, error, refetch: fetchRfqs, submitBid, acceptBid };
+  return { rfqs, loading, error, refetch: fetchRfqs, createRfq, submitBid, acceptBid };
 };

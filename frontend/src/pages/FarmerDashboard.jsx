@@ -50,30 +50,54 @@ export default function FarmerDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-            <h3 className="text-lg font-bold text-navy-900 mb-4">Recent Orders</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-navy-900">Incoming Buyer Requests & Orders</h3>
+              <Link to="/farmer/requests" className="text-xs font-semibold text-agrigreen-600 hover:text-agrigreen-700 hover:underline">
+                View All Requests →
+              </Link>
+            </div>
             <div className="overflow-x-auto">
                <table className="min-w-full divide-y divide-slate-200">
                  <thead>
                    <tr>
-                     <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Buyer</th>
+                     <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Buyer & Business</th>
                      <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Crop</th>
                      <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quantity</th>
                      <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Total</th>
                      <th className="px-4 py-3 bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                     <th className="px-4 py-3 bg-slate-50 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Action</th>
                    </tr>
                  </thead>
                  <tbody className="bg-white divide-y divide-slate-200">
                     {stats?.recentOrders?.length === 0 ? (
-                      <tr><td colSpan="5" className="px-4 py-4 text-center text-sm text-slate-500">No recent orders found.</td></tr>
+                      <tr><td colSpan="6" className="px-4 py-6 text-center text-sm text-slate-500">No incoming buyer requests found.</td></tr>
                     ) : (
                       stats?.recentOrders?.map(order => (
-                        <tr key={order._id}>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">{order.buyer?.firstName} {order.buyer?.lastName}</td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-500">{order.listing?.title}</td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-500">{order.quantity}</td>
-                          <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-500">Rs. {order.totalPrice}</td>
+                        <tr key={order._id} className="hover:bg-slate-50/80 transition">
                           <td className="px-4 py-4 whitespace-nowrap">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">{order.status}</span>
+                            <div className="text-sm font-semibold text-slate-900">{order.buyer?.firstName} {order.buyer?.lastName}</div>
+                            <div className="text-xs text-slate-500">{order.buyer?.businessName || 'Wholesale Buyer'}</div>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-600 font-medium">{order.listing?.title}</td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm text-slate-600">{order.quantity} {order.listing?.quantityUnit || 'KG'}</td>
+                          <td className="px-4 py-4 whitespace-nowrap text-sm font-bold text-agrigreen-700">Rs. {order.totalPrice?.toLocaleString()}</td>
+                          <td className="px-4 py-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              order.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-800' :
+                              order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-800' :
+                              order.status === 'DELIVERED' ? 'bg-teal-100 text-teal-800' :
+                              order.status === 'REJECTED' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                            }`}>
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 whitespace-nowrap text-right">
+                            <Link
+                              to={`/farmer/buyer-requests/${order._id}`}
+                              className="text-xs font-semibold text-agrigreen-700 bg-agrigreen-50 hover:bg-agrigreen-100 border border-agrigreen-200 px-2.5 py-1 rounded transition"
+                            >
+                              View Details
+                            </Link>
                           </td>
                         </tr>
                       ))
