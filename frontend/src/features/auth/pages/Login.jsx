@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { getPostAuthPath, getSafeReturnTo, getStoredReturnTo } from '../utils/authRedirect';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -18,6 +20,15 @@ export default function Login() {
     try {
       const response = await login({ email, password });
       if (response.success) {
+        const requestedReturnTo = getSafeReturnTo(new URLSearchParams(location.search).get('returnTo'));
+        const returnTo = requestedReturnTo || getStoredReturnTo();
+
+        if (response.data.accountStatus === 'APPROVED') {
+          localStorage.removeItem('authReturnTo');
+        } else if (returnTo) {
+          localStorage.setItem('authReturnTo', returnTo);
+        }
+
         // Check for purchase intent
         const intentStr = localStorage.getItem('purchaseIntent');
         if (intentStr) {
@@ -32,11 +43,7 @@ export default function Login() {
           }
         }
 
-        if (response.data.role === 'BUYER') {
-          navigate('/buyer');
-        } else {
-          navigate('/farmer');
-        }
+        navigate(getPostAuthPath(response.data.role, returnTo));
       }
     } catch (err) {
       setError(err.message || 'Failed to login');
@@ -53,7 +60,7 @@ export default function Login() {
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
           Or{' '}
-          <Link to="/register" className="font-medium text-agrigreen-600 hover:text-agrigreen-500">
+          <Link to={`/register${location.search}`} className="font-medium text-agrigreen-600 hover:text-agrigreen-500">
             create a new account
           </Link>
         </p>

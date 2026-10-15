@@ -10,7 +10,7 @@ const generateToken = (id) => {
 
 export const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role, phone } = req.body;
+    const { firstName, lastName, email, password, role, phone, businessName, businessType, businessAddress } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -29,6 +29,9 @@ export const register = async (req, res) => {
       role: role || 'FARMER',
       phone,
       accountStatus: role === 'ADMIN' ? 'APPROVED' : 'PENDING_REVIEW',
+      businessName,
+      businessType,
+      businessAddress,
     });
 
     if (user) {
@@ -37,7 +40,7 @@ export const register = async (req, res) => {
           user: user._id,
           role: user.role,
           status: 'PENDING_REVIEW',
-          submittedData: { firstName, lastName, email, phone, role }
+          submittedData: { firstName, lastName, email, phone, role, businessName, businessType, businessAddress }
         });
       }
 

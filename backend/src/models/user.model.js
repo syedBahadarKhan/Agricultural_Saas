@@ -57,6 +57,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['PENDING_REVIEW', 'APPROVED', 'REJECTED', 'SUSPENDED', 'CHANGES_REQUESTED'],
     },
+    businessName: {
+      type: String,
+      trim: true,
+    },
+    businessType: {
+      type: String,
+      trim: true,
+    },
+    businessAddress: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
